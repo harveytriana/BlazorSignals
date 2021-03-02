@@ -5,6 +5,9 @@ namespace BlazorSignals.Shared
 {
     public class Pulse
     {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        
         [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }
 
@@ -13,7 +16,7 @@ namespace BlazorSignals.Shared
 
         public override string ToString()
         {
-            return $"Measurement (Timestamp = {Timestamp:HH:mm:ss}, Value = {Value:0.00000})";
+            return $"{Id} {Timestamp:HH:mm:ss} {Value:0.00000})";
         }
     }
 }

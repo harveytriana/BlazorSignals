@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BlazorSignals.Shared;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
+using static System.Console;
 
 namespace TransmitterUnit
 {
@@ -11,24 +12,24 @@ namespace TransmitterUnit
     {
         static void Main()
         {
-            using var simulator = new SensorSimulator();
-            simulator.Run();
+            new SensorSimulator().Run();
         }
     }
 
     class SensorSimulator : IDisposable
     {
-        readonly string _HubUri = "https://localhost:44398"; // BlazorPulse.Server IP
+        readonly string _HubUri = "https://localhost:44398"; // BlazorSignals.Server 
         readonly string _HubPath = "/SensorHub";
         HubConnection _hubConnection;
 
         public void Run()
         {
-            Console.WriteLine("BROADCAST SENSOR\n");
-            Console.WriteLine("URL {0}\n", _HubUri + _HubPath);
+            WriteLine("BROADCAST SENSOR\n");
+            WriteLine("URL {0}\n", _HubUri + _HubPath);
+
             if (_HubUri.Contains(":")) {
-                Console.WriteLine("Press Enter key when server is ready");
-                Console.ReadKey();
+                WriteLine("Press Enter key when server is ready");
+                ReadKey();
             }
 
             var loggerFactory = LoggerFactory.Create(builder => {
@@ -42,11 +43,11 @@ namespace TransmitterUnit
                 Task.Run(() => MainAsync(logger, cancellationToken).Wait());
             }
             catch (Exception exception) {
-                Console.WriteLine($"Exception: {exception.Message}");
+                WriteLine($"Exception: {exception.Message}");
             }
 
-            Console.WriteLine("\nPress Enter to Exit ...");
-            Console.ReadKey();
+            WriteLine("\nPress Enter to Exit ...");
+            ReadKey();
 
             // cancel the thread
             cancellationTokenSource.Cancel();
@@ -62,7 +63,7 @@ namespace TransmitterUnit
                 await _hubConnection.StartAsync(cancellationToken);
             }
             catch {
-                Console.WriteLine("Can not start connection to hub.");
+                WriteLine("Can not start connection to hub.");
                 return;
             }
             // start

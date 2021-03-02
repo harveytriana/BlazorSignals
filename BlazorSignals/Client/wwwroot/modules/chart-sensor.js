@@ -47,10 +47,7 @@ function getConfig() {
                 ],
                 yAxes: [
                     {
-                        ticks: {
-                            max: 1,
-                            min: -1
-                        }
+                        ticks: { max: 1, min: -1 }
                     }
                 ]
             }

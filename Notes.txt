@@ -14,4 +14,13 @@
 
 Ace Frehley - New York groove (Kiss Solo albums 1978)
 MrArvidsen
- 
+
+Add site.js
+function getSiteName() {
+
+    let result = window.location.href.replace(window.location.pathname, '');
+
+    console.log("Site: ", result);
+
+    return result;
+}

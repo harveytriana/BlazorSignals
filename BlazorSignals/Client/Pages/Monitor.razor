@@ -8,7 +8,7 @@
 <h3>Real Time Sensor</h3>
 <hr />
 <p>This is an experiment on providing Real-time Charts</p>
-<table class="table">
+<table class="table table-bordered">
     <tr>
         <td>Sender</td>
         <td>@SensorSender</td>
@@ -22,14 +22,14 @@
         <td>@SensorValue</td>
     </tr>
 </table>
-<hr />
+<br />
 <canvas id="chart" style="width: 100%; height: 320px"></canvas>
 <br />
 <pre id="echo">@Status</pre>
 
 @code {
     HubConnection connection;
-    string SensorSender { get; set; } = "Drilling Rate, mps";
+    string SensorSender { get; set; } = "Tepeature Gradient, C";
     string SensorTime { get; set; } = "00:00:00.000";
     string SensorValue { get; set; } = "0.000000";
     string Status { get; set; }
@@ -39,25 +39,18 @@
     protected override async Task OnInitializedAsync()
     {
         var url = _navigation.ToAbsoluteUri("/sensorHub");
-
-        // override by debug
-        // var url = "http://localhost/axis/SensorHub";
-        // needs CORS
-
         try {
-            // interop
-            _module = await _jsRunTime.InvokeAsync<IJSObjectReference>("import", "./js/chart-sensor.js?v=1.0");
+            // interoperability
+            _module = await _jsRunTime.InvokeAsync<IJSObjectReference>("import", "./modules/chart-sensor.js?v=1.0");
             await _module.InvokeVoidAsync("init");
-
             // signalr
             connection = new HubConnectionBuilder().WithUrl(url).Build();
-
             // to subscribe, map exactly the hub's function
             connection.On<string, Pulse>("Broadcast", (sender, pulse) => {
                 SensorTime = pulse.Timestamp.ToString("HH:mm:ss.fff");
                 SensorValue = pulse.Value.ToString("N6");
                 StateHasChanged();
-                // interop
+                // interoperability
                 _module.InvokeVoidAsync("updateChart", pulse);
             });
             await connection.StartAsync();
