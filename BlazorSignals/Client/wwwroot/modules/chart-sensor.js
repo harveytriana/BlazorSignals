@@ -24,8 +24,8 @@ function getConfig() {
             datasets: [
                 {
                     data: values,
-                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                    borderColor: 'rgba(112, 146, 190, 0.9)',
+                    backgroundColor: 'rgba(112, 146, 190, 0.1)',
+                    borderColor: 'rgb(112, 146, 190)',
                     borderWidth: 2,
                     lineTension: 0.25,
                     pointRadius: 0

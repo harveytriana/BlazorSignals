@@ -6,60 +6,68 @@
 @implements IAsyncDisposable
 
 <h3>Real Time Sensor</h3>
-<hr />
+<hr class="hr" />
 <p>This is an experiment on providing Real-time Charts</p>
-<table class="table table-bordered">
+<table class="table table-bordered table-sm">
     <tr>
         <td>Sender</td>
-        <td>@SensorSender</td>
+        <td>@sensorSender</td>
     </tr>
     <tr>
         <td>Signal Time</td>
-        <td>@SensorTime</td>
+        <td>@sensorTime</td>
     </tr>
     <tr>
         <td>Sensor Value</td>
-        <td>@SensorValue</td>
+        <td>@sensorValue</td>
     </tr>
 </table>
 <br />
 <canvas id="chart" style="width: 100%; height: 320px"></canvas>
 <br />
-<pre id="echo">@Status</pre>
+<div class="card">
+    <div class="card-body">
+<pre id="echo">@status</pre>
+    </div>
+</div>
 
 @code {
     HubConnection connection;
-    string SensorSender { get; set; } = "Tepeature Gradient, C";
-    string SensorTime { get; set; } = "00:00:00.000";
-    string SensorValue { get; set; } = "0.000000";
-    string Status { get; set; }
+    string sensorSender  = "Tempeature Gradient, C";
+    string sensorTime = "00:00:00.000";
+    string sensorValue = "0.000000";
+    string status;
+    long pulses = 0;
 
     IJSObjectReference _module;
 
     protected override async Task OnInitializedAsync()
     {
         var url = _navigation.ToAbsoluteUri("/sensorHub");
+        var mod = "./modules/chart-sensor.js?v=2.0";
         try {
             // interoperability
-            _module = await _jsRunTime.InvokeAsync<IJSObjectReference>("import", "./modules/chart-sensor.js?v=1.0");
+            _module = await _jsRunTime.InvokeAsync<IJSObjectReference>("import", mod);
             await _module.InvokeVoidAsync("init");
             // signalr
             connection = new HubConnectionBuilder().WithUrl(url).Build();
             // to subscribe, map exactly the hub's function
             connection.On<string, Pulse>("Broadcast", (sender, pulse) => {
-                SensorTime = pulse.Timestamp.ToString("HH:mm:ss.fff");
-                SensorValue = pulse.Value.ToString("N6");
+                sensorTime = pulse.Timestamp.ToString("HH:mm:ss.fff");
+                sensorValue = pulse.Value.ToString("N6");
+                status = $"Pulses count: {pulses++}";
+                // update table
                 StateHasChanged();
                 // interoperability
                 _module.InvokeVoidAsync("updateChart", pulse);
             });
             await connection.StartAsync();
+
+            status = $"status: {(IsConnected ? "Waiting for broadcast events." : "Without connection")}";
         }
         catch (Exception exception) {
-            Status = $"Exception: {exception.Message}";
-            return;
+            status = $"Exception:\n{exception.Message}";
         }
-        Status = $"Status: {(IsConnected ? "Waiting for broadcast events." : "Without connection")}";
     }
 
     public bool IsConnected => connection.State == HubConnectionState.Connected;
