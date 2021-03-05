@@ -62,8 +62,8 @@
                 _module.InvokeVoidAsync("updateChart", pulse);
             });
             await connection.StartAsync();
-
-            status = $"status: {(IsConnected ? "Waiting for broadcast events." : "Without connection")}";
+            status = "Status: " 
+                   + (IsConnected ? "Waiting for broadcast events." : "Without connection");
         }
         catch (Exception exception) {
             status = $"Exception:\n{exception.Message}";
