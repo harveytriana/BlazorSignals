@@ -23,7 +23,7 @@
     </tr>
 </table>
 <br />
-<canvas id="chart" style="width: 100%; height: 320px"></canvas>
+<canvas id="chart" style="width: 100%; height: 250px"></canvas>
 <br />
 <div class="card">
     <div class="card-body">
@@ -44,7 +44,7 @@
     protected override async Task OnInitializedAsync()
     {
         var url = _navigation.ToAbsoluteUri("/sensorHub");
-        var mod = "./modules/chart-sensor.js?v=2.0";
+        var mod = "./modules/chart-sensor.js";
         try {
             // interoperability
             _module = await _jsRunTime.InvokeAsync<IJSObjectReference>("import", mod);
