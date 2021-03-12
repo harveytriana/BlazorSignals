@@ -16,7 +16,7 @@ namespace BlazorSignals.Shared
 
         public override string ToString()
         {
-            return $"{Id} {Timestamp:HH:mm:ss} {Value:0.00000})";
+            return $"{Id} {Timestamp:HH:mm:ss.fff} {Value:0.00000})";
         }
     }
 }
